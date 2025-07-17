@@ -1,0 +1,1467 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SecureFlow | Advanced Security Platform</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            background: #0a0a0a;
+            color: #ffffff;
+            overflow-x: hidden;
+        }
+
+        /* Gradient Text Utilities */
+        .gradient-text {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .gradient-gold {
+            background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .gradient-purple {
+            background: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        /* Glass Effect */
+        .glass {
+            background: rgba(255, 255, 255, 0.05);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 16px;
+        }
+
+        /* Navigation */
+        .topbar {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 1rem 2rem;
+            background: rgba(10, 10, 10, 0.8);
+            backdrop-filter: blur(20px);
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+            z-index: 1000;
+        }
+
+        .navLeft {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .logo {
+            width: 32px;
+            height: 32px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 600;
+            color: white;
+        }
+
+        .brandText {
+            font-size: 1.2rem;
+            font-weight: 600;
+        }
+
+        .navCenter ul {
+            display: flex;
+            list-style: none;
+            gap: 2rem;
+        }
+
+        .navCenter li {
+            cursor: pointer;
+            padding: 0.5rem 1rem;
+            border-radius: 8px;
+            transition: all 0.3s ease;
+        }
+
+        .navCenter li:hover {
+            background: rgba(255, 255, 255, 0.1);
+        }
+
+        .navRight {
+            display: flex;
+            gap: 1rem;
+            align-items: center;
+        }
+        
+        /* === USER PROVIDED STYLES START === */
+        
+         .signIn {
+            background: transparent;
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            color: white;
+            padding: 0.5rem 1rem;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .signIn:hover {
+            background: rgba(255, 255, 255, 0.1);
+        }
+
+        .signUp {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            border: none;
+            color: white;
+            padding: 0.5rem 1rem;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .signUp:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 25px rgba(102, 126, 234, 0.3);
+        }
+
+        /* Auth Modal Styles */
+        .auth-modal {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.8);
+            backdrop-filter: blur(10px);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 2000;
+            opacity: 0;
+            visibility: hidden;
+            transition: all 0.3s ease;
+        }
+
+        .auth-modal.active {
+            opacity: 1;
+            visibility: visible;
+        }
+
+        .auth-container {
+            position: relative;
+            background: rgba(10, 10, 10, 0.95);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 16px;
+            padding: 2rem;
+            width: 100%;
+            max-width: 400px;
+            margin: 1rem;
+            transform: translateY(20px);
+            transition: transform 0.3s ease;
+        }
+
+        .auth-modal.active .auth-container {
+            transform: translateY(0);
+        }
+
+        .auth-header {
+            text-align: center;
+            margin-bottom: 2rem;
+        }
+
+        .auth-title {
+            font-size: 1.8rem;
+            font-weight: 600;
+            margin-bottom: 0.5rem;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .auth-subtitle {
+            color: rgba(255, 255, 255, 0.7);
+            font-size: 0.9rem;
+        }
+
+        .auth-form {
+            display: flex;
+            flex-direction: column;
+            gap: 1rem;
+        }
+
+        .form-group {
+            display: flex;
+            flex-direction: column;
+            gap: 0.5rem;
+        }
+
+        .form-label {
+            font-size: 0.9rem;
+            color: rgba(255, 255, 255, 0.8);
+            font-weight: 500;
+        }
+
+        .form-input {
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 8px;
+            padding: 0.75rem;
+            color: white;
+            font-size: 0.9rem;
+            transition: all 0.3s ease;
+        }
+
+        .form-input:focus {
+            outline: none;
+            border-color: #667eea;
+            box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+        }
+
+        .form-input::placeholder {
+            color: rgba(255, 255, 255, 0.4);
+        }
+
+        .auth-button {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            border: none;
+            color: white;
+            padding: 0.75rem;
+            border-radius: 8px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            margin-top: 1rem;
+        }
+
+        .auth-button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 25px rgba(102, 126, 234, 0.3);
+        }
+
+        .auth-button:disabled {
+            opacity: 0.6;
+            cursor: not-allowed;
+            transform: none;
+        }
+
+        .auth-switch {
+            text-align: center;
+            margin-top: 1.5rem;
+            color: rgba(255, 255, 255, 0.7);
+        }
+
+        .auth-switch a {
+            color: #667eea;
+            text-decoration: none;
+            font-weight: 500;
+            cursor: pointer;
+        }
+
+        .auth-switch a:hover {
+            color: #764ba2;
+        }
+
+        .close-modal {
+            position: absolute;
+            top: 1rem;
+            right: 1rem;
+            background: none;
+            border: none;
+            color: rgba(255, 255, 255, 0.7);
+            font-size: 1.5rem;
+            cursor: pointer;
+            transition: color 0.3s ease;
+        }
+
+        .close-modal:hover {
+            color: white;
+        }
+
+        .error-message {
+            color: #ff6b6b;
+            font-size: 0.8rem;
+            margin-top: 0.5rem;
+        }
+
+        .success-message {
+            color: #4ade80;
+            font-size: 0.8rem;
+            margin-top: 0.5rem;
+        }
+
+        .loading {
+            display: inline-block;
+            width: 16px;
+            height: 16px;
+            border: 2px solid rgba(255, 255, 255, 0.3);
+            border-radius: 50%;
+            border-top-color: white;
+            animation: spin 1s ease-in-out infinite;
+            margin-right: 0.5rem;
+        }
+
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+
+        /* === USER PROVIDED STYLES END === */
+
+        .menu-toggle {
+            display: none;
+            background: none;
+            border: none;
+            color: white;
+            font-size: 1.5rem;
+            cursor: pointer;
+        }
+
+        .mobile-menu {
+            position: fixed;
+            top: 80px;
+            left: 0;
+            right: 0;
+            background: rgba(10, 10, 10, 0.95);
+            backdrop-filter: blur(20px);
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+            transform: translateY(-100%);
+            transition: transform 0.3s ease;
+            z-index: 999;
+        }
+
+        .mobile-menu.open {
+            transform: translateY(0);
+        }
+
+        .mobile-menu ul {
+            list-style: none;
+            padding: 1rem;
+        }
+
+        .mobile-menu li {
+            padding: 1rem;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+            cursor: pointer;
+        }
+
+        /* Hero Section */
+        .heroSection {
+            position: relative;
+            height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            overflow: hidden;
+        }
+
+        .hero-video {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            z-index: -2;
+        }
+
+        .hero-overlay {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.6);
+            z-index: -1;
+        }
+
+        .heroContent {
+            text-align: center;
+            max-width: 800px;
+            padding: 0 2rem;
+        }
+
+        .heroTitle {
+            font-size: 4rem;
+            font-weight: 700;
+            margin-bottom: 1.5rem;
+            line-height: 1.2;
+        }
+
+        .heroDescription {
+            font-size: 1.3rem;
+            color: rgba(255, 255, 255, 0.8);
+            margin-bottom: 2rem;
+        }
+
+        .heroButtons {
+            display: flex;
+            gap: 1rem;
+            justify-content: center;
+            margin-top: 2rem;
+        }
+
+        .heroButton {
+            padding: 1rem 2rem;
+            border-radius: 12px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            border: none;
+            font-size: 1.1rem;
+        }
+
+        .heroButton.primary {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+        }
+
+        .heroButton.primary:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 15px 35px rgba(102, 126, 234, 0.4);
+        }
+
+        .heroButton.secondary {
+            background: rgba(255, 255, 255, 0.1);
+            color: white;
+            border: 1px solid rgba(255, 255, 255, 0.2);
+        }
+
+        .heroButton.secondary:hover {
+            background: rgba(255, 255, 255, 0.2);
+        }
+
+        /* Features Section */
+        .featuresSection {
+            padding: 8rem 2rem;
+            background: linear-gradient(135deg, #0a0a0a 0%, #1a1a2e 100%);
+        }
+
+        .featuresContainer {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        .featuresHeader {
+            text-align: center;
+            margin-bottom: 5rem;
+        }
+
+        .featuresTitle {
+            font-size: 3rem;
+            font-weight: 700;
+            margin-bottom: 1rem;
+        }
+
+        .featureCards {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+            gap: 2rem;
+        }
+
+        .featureCard {
+            padding: 2rem;
+            transition: all 0.3s ease;
+            cursor: pointer;
+        }
+
+        .featureCard:hover {
+            transform: translateY(-10px);
+            box-shadow: 0 20px 40px rgba(102, 126, 234, 0.2);
+        }
+
+        .iconCircle {
+            width: 60px;
+            height: 60px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.5rem;
+            margin-bottom: 1.5rem;
+        }
+
+        .featureCard h3 {
+            font-size: 1.5rem;
+            margin-bottom: 1rem;
+            font-weight: 600;
+        }
+
+        .featureCard p {
+            color: rgba(255, 255, 255, 0.8);
+            line-height: 1.6;
+        }
+
+        /* Services Section */
+        .servicesSection {
+            padding: 8rem 2rem;
+            background: #0a0a0a;
+        }
+
+        .servicesContainer {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        .servicesHeader {
+            text-align: center;
+            margin-bottom: 5rem;
+        }
+
+        .servicesTitle {
+            font-size: 3rem;
+            font-weight: 700;
+            margin-bottom: 1rem;
+        }
+
+        .serviceCards {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(400px, 1fr));
+            gap: 2rem;
+        }
+
+        .serviceCard {
+            padding: 2rem;
+            transition: all 0.3s ease;
+            cursor: pointer;
+            overflow: hidden;
+        }
+
+        .serviceCard:hover {
+            transform: translateY(-10px);
+            box-shadow: 0 25px 50px rgba(102, 126, 234, 0.3);
+        }
+
+        .cardGif {
+            width: 100%;
+            height: 200px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            border-radius: 12px;
+            margin-bottom: 1.5rem;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 3rem;
+            color: white;
+        }
+
+        .cardHeader {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            margin-bottom: 1rem;
+        }
+
+        .cardHeader h3 {
+            font-size: 1.5rem;
+            font-weight: 600;
+        }
+
+        /* Stats Section */
+        .statsSection {
+            padding: 8rem 2rem;
+            background: linear-gradient(135deg, #1a1a2e 0%, #0a0a0a 100%);
+        }
+
+        .statsContainer {
+            max-width: 1200px;
+            margin: 0 auto;
+            text-align: center;
+        }
+
+        .statsGrid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 2rem;
+            margin-top: 3rem;
+        }
+
+        .statCard {
+            padding: 2rem;
+            text-align: center;
+            transition: all 0.3s ease;
+        }
+
+        .statCard:hover {
+            transform: translateY(-5px);
+        }
+
+        .statCard h3 {
+            font-size: 3rem;
+            font-weight: 700;
+            margin-bottom: 0.5rem;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .statCard p {
+            color: rgba(255, 255, 255, 0.8);
+            font-size: 1.1rem;
+        }
+
+        /* Pricing Section */
+        .pricingSection {
+            padding: 8rem 2rem;
+            background: #0a0a0a;
+        }
+
+        .pricingContainer {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        .pricingHeader {
+            text-align: center;
+            margin-bottom: 5rem;
+        }
+
+        .pricingGrid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+            gap: 2rem;
+        }
+
+        .priceCard {
+            padding: 2rem;
+            position: relative;
+            transition: all 0.3s ease;
+        }
+
+        .priceCard:hover {
+            transform: translateY(-10px);
+            box-shadow: 0 25px 50px rgba(102, 126, 234, 0.3);
+        }
+
+        .priceCard.popular {
+            border: 2px solid #667eea;
+        }
+
+        .popularBadge {
+            position: absolute;
+            top: -10px;
+            left: 50%;
+            transform: translateX(-50%);
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 0.5rem 1rem;
+            border-radius: 20px;
+            font-size: 0.8rem;
+            font-weight: 600;
+        }
+
+        .priceCard h3 {
+            font-size: 1.5rem;
+            margin-bottom: 1rem;
+            font-weight: 600;
+        }
+
+        .priceSubtitle {
+            color: rgba(255, 255, 255, 0.7);
+            margin-bottom: 2rem;
+            line-height: 1.5;
+        }
+
+        .priceAmount {
+            display: flex;
+            align-items: baseline;
+            gap: 0.5rem;
+            margin-bottom: 2rem;
+        }
+
+        .price {
+            font-size: 3rem;
+            font-weight: 700;
+            color: #667eea;
+        }
+
+        .period {
+            color: rgba(255, 255, 255, 0.6);
+        }
+
+        .priceFeatures {
+            list-style: none;
+            margin-bottom: 2rem;
+        }
+
+        .priceFeatures li {
+            padding: 0.5rem 0;
+            color: rgba(255, 255, 255, 0.8);
+        }
+
+        .priceFeatures li.included {
+            color: #4ade80;
+        }
+
+        .priceFeatures li.excluded {
+            color: rgba(255, 255, 255, 0.4);
+        }
+
+        .priceButton {
+            width: 100%;
+            padding: 1rem;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border: none;
+            border-radius: 12px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .priceButton:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 25px rgba(102, 126, 234, 0.4);
+        }
+
+        /* Footer */
+        .footer {
+            background: #0a0a0a;
+            padding: 4rem 2rem 2rem;
+            border-top: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .footerContainer {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        .footerTop {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 2rem;
+        }
+
+        .footerLogo {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .footerLinks {
+            display: flex;
+            gap: 4rem;
+        }
+
+        .linkColumn h4 {
+            margin-bottom: 1rem;
+            color: #667eea;
+        }
+
+        .linkColumn ul {
+            list-style: none;
+        }
+
+        .linkColumn li {
+            margin-bottom: 0.5rem;
+        }
+
+        .linkColumn a {
+            color: rgba(255, 255, 255, 0.7);
+            text-decoration: none;
+            transition: color 0.3s ease;
+        }
+
+        .linkColumn a:hover {
+            color: #667eea;
+        }
+
+        .footerBottom {
+            text-align: center;
+            padding-top: 2rem;
+            border-top: 1px solid rgba(255, 255, 255, 0.1);
+            color: rgba(255, 255, 255, 0.6);
+        }
+
+        /* Responsive Design */
+        @media (max-width: 768px) {
+            .navCenter {
+                display: none;
+            }
+
+            .menu-toggle {
+                display: block;
+            }
+
+            .heroTitle {
+                font-size: 2.5rem;
+            }
+
+            .heroDescription {
+                font-size: 1.1rem;
+            }
+
+            .heroButtons {
+                flex-direction: column;
+                align-items: center;
+            }
+
+            .featuresTitle, .servicesTitle {
+                font-size: 2rem;
+            }
+
+            .footerTop {
+                flex-direction: column;
+                gap: 2rem;
+            }
+
+            .footerLinks {
+                gap: 2rem;
+            }
+        }
+
+        /* Animations */
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .fade-in-up {
+            animation: fadeInUp 0.8s ease-out;
+        }
+
+        /* Particle Background */
+        .particles {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            z-index: -10;
+        }
+
+        .particle {
+            position: absolute;
+            width: 2px;
+            height: 2px;
+            background: rgba(102, 126, 234, 0.5);
+            border-radius: 50%;
+            animation: float 10s infinite linear;
+        }
+
+        @keyframes float {
+            0% {
+                transform: translateY(100vh) rotate(0deg);
+                opacity: 0;
+            }
+            10% {
+                opacity: 1;
+            }
+            90% {
+                opacity: 1;
+            }
+            100% {
+                transform: translateY(-100vh) rotate(360deg);
+                opacity: 0;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="particles" id="particles"></div>
+
+    <nav class="topbar">
+        <div class="navLeft">
+            <div class="logo">SF</div>
+            <span class="brandText gradient-text">SecureFlow</span>
+        </div>
+        <div class="navCenter">
+            <ul>
+                <li onclick="scrollToSection('features')">Features</li>
+                <li onclick="scrollToSection('services')">Services</li>
+                <li onclick="scrollToSection('pricing')">Pricing</li>
+                <li onclick="window.open('#', '_blank')">Docs</li>
+                <li onclick="window.open('#', '_blank')">Support</li>
+            </ul>
+        </div>
+        <div class="navRight">
+            <button class="signIn" onclick="openModal('signIn')">Sign In</button>
+            <button class="signUp" onclick="openModal('signUp')">Sign Up</button>
+            <button class="menu-toggle" onclick="toggleMobileMenu()">☰</button>
+        </div>
+    </nav>
+
+    <div class="mobile-menu" id="mobileMenu">
+        <ul>
+            <li onclick="scrollToSection('features'); toggleMobileMenu();">Features</li>
+            <li onclick="scrollToSection('services'); toggleMobileMenu();">Services</li>
+            <li onclick="scrollToSection('pricing'); toggleMobileMenu();">Pricing</li>
+            <li onclick="window.open('#', '_blank'); toggleMobileMenu();">Docs</li>
+            <li onclick="window.open('#', '_blank'); toggleMobileMenu();">Support</li>
+        </ul>
+    </div>
+
+    <section class="heroSection">
+        <div class="hero-overlay"></div>
+        <div class="heroContent fade-in-up">
+            <h1 class="heroTitle">Secure Your Digital Future with <span class="gradient-text">SecureFlow</span></h1>
+            <p class="heroDescription">Advanced cybersecurity platform that protects your applications, data, and infrastructure with cutting-edge AI-powered threat detection.</p>
+            <div class="heroButtons">
+                <button class="heroButton primary" onclick="scrollToSection('pricing')">Start Free Trial</button>
+                <button class="heroButton secondary" onclick="scrollToSection('features')">Learn More</button>
+            </div>
+        </div>
+    </section>
+
+    <section class="featuresSection" id="features">
+        <div class="featuresContainer">
+            <div class="featuresHeader">
+                <h2 class="featuresTitle">Advanced <span class="gradient-purple">Security</span> Features</h2>
+                <p class="heroDescription">Comprehensive protection built for modern applications and infrastructure.</p>
+            </div>
+            <div class="featureCards">
+                <div class="featureCard glass">
+                    <div class="iconCircle">🛡️</div>
+                    <h3>AI-Powered Threat Detection</h3>
+                    <p>Advanced machine learning algorithms continuously monitor and detect potential security threats in real-time, providing instant alerts and automated responses.</p>
+                </div>
+                <div class="featureCard glass">
+                    <div class="iconCircle">⚡</div>
+                    <h3>Lightning Fast Response</h3>
+                    <p>Sub-second response times with our globally distributed security infrastructure. Your applications stay protected without performance impact.</p>
+                </div>
+                <div class="featureCard glass">
+                    <div class="iconCircle">🔒</div>
+                    <h3>Zero-Trust Architecture</h3>
+                    <p>Comprehensive security model that verifies every user and device, ensuring maximum protection against both internal and external threats.</p>
+                </div>
+                <div class="featureCard glass">
+                    <div class="iconCircle">📊</div>
+                    <h3>Advanced Analytics</h3>
+                    <p>Deep insights into your security posture with comprehensive reporting, threat intelligence, and predictive analytics to stay ahead of attacks.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section class="servicesSection" id="services">
+        <div class="servicesContainer">
+            <div class="servicesHeader">
+                <h2 class="servicesTitle">Powerful <span class="gradient-text">Tools</span> for Modern Security</h2>
+                <p class="heroDescription">Everything you need to protect, monitor, and secure your digital assets.</p>
+            </div>
+            <div class="serviceCards">
+                <div class="featureCard glass serviceCard">
+                    <div class="cardGif">🔐</div>
+                    <div class="cardContent">
+                        <div class="cardHeader">
+                            <div class="iconCircle">🔐</div>
+                            <h3>Identity Protection</h3>
+                        </div>
+                        <p>Advanced identity verification and access management system that ensures only authorized users can access your resources.</p>
+                    </div>
+                </div>
+
+                <div class="featureCard glass serviceCard">
+                    <div class="cardGif">📡</div>
+                    <div class="cardContent">
+                        <div class="cardHeader">
+                            <div class="iconCircle">📡</div>
+                            <h3>Network Security</h3>
+                        </div>
+                        <p>Comprehensive network monitoring and protection with advanced firewall capabilities and intrusion detection systems.</p>
+                    </div>
+                </div>
+
+                <div class="featureCard glass serviceCard">
+                    <div class="cardGif">🔍</div>
+                    <div class="cardContent">
+                        <div class="cardHeader">
+                            <div class="iconCircle">🔍</div>
+                            <h3>Vulnerability Scanning</h3>
+                        </div>
+                        <p>Automated vulnerability assessment and penetration testing to identify and fix security weaknesses before they can be exploited.</p>
+                    </div>
+                </div>
+
+                <div class="featureCard glass serviceCard">
+                    <div class="cardGif">📋</div>
+                    <div class="cardContent">
+                        <div class="cardHeader">
+                            <div class="iconCircle">📋</div>
+                            <h3>Compliance Management</h3>
+                        </div>
+                        <p>Automated compliance monitoring and reporting for GDPR, HIPAA, SOC 2, and other regulatory requirements.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section class="statsSection">
+        <div class="statsContainer">
+            <div class="statsHeader">
+                <h2 class="heroTitle">Trusted by Thousands</h2>
+                <p class="heroDescription">Join companies worldwide who trust SecureFlow for their security needs.</p>
+            </div>
+            <div class="statsGrid">
+                <div class="statCard glass">
+                    <h3>50K+</h3>
+                    <p>Protected Applications</p>
+                </div>
+                <div class="statCard glass">
+                    <h3>99.9%</h3>
+                    <p>Uptime Guarantee</p>
+                </div>
+                <div class="statCard glass">
+                    <h3>24/7</h3>
+                    <p>Security Monitoring</p>
+                </div>
+                <div class="statCard glass">
+                    <h3>500M+</h3>
+                    <p>Threats Blocked</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section class="pricingSection" id="pricing">
+        <div class="pricingContainer">
+            <div class="pricingHeader">
+                <h2 class="heroTitle">Simple, Transparent Pricing</h2>
+                <p class="heroDescription">Choose the plan that fits your security needs.</p>
+            </div>
+            <div class="pricingGrid">
+                <div class="priceCard glass">
+                    <h3>Starter</h3>
+                    <p class="priceSubtitle">Perfect for small teams and startups looking to establish basic security foundations.</p>
+                    <div class="priceAmount">
+                        <span class="price">$29</span>
+                        <span class="period">/month</span>
+                    </div>
+                    <ul class="priceFeatures">
+                        <li class="included">✓ Basic threat detection</li>
+                        <li class="included">✓ Up to 5 applications</li>
+                        <li class="included">✓ Email support</li>
+                        <li class="included">✓ Security dashboard</li>
+                        <li class="excluded">× Advanced analytics</li>
+                        <li class="excluded">× Custom integrations</li>
+                    </ul>
+                    <button class="priceButton" onclick="startTrial()">Start Free Trial</button>
+                </div>
+
+                <div class="priceCard glass popular">
+                    <div class="popularBadge">Most Popular</div>
+                    <h3>Professional</h3>
+                    <p class="priceSubtitle">Advanced security features for growing businesses and mid-size companies.</p>
+                    <div class="priceAmount">
+                        <span class="price">$99</span>
+                        <span class="period">/month</span>
+                    </div>
+                    <ul class="priceFeatures">
+                        <li class="included">✓ Advanced threat detection</li>
+                        <li class="included">✓ Up to 50 applications</li>
+                        <li class="included">✓ Priority support</li>
+                        <li class="included">✓ Advanced analytics</li>
+                        <li class="included">✓ Custom integrations</li>
+                        <li class="included">✓ Compliance reporting</li>
+                    </ul>
+                    <button class="priceButton" onclick="startTrial()">Start Free Trial</button>
+                </div>
+
+                <div class="priceCard glass">
+                    <h3>Enterprise</h3>
+                    <p class="priceSubtitle">Comprehensive security solution for large organizations with custom requirements.</p>
+                    <div class="priceAmount">
+                        <span class="price">Custom</span>
+                        <span class="period">pricing</span>
+                    </div>
+                    <ul class="priceFeatures">
+                        <li class="included">✓ All Professional features</li>
+                        <li class="included">✓ Unlimited applications</li>
+                        <li class="included">✓ 24/7 dedicated support</li>
+                        <li class="included">✓ Custom security policies</li>
+                        <li class="included">✓ On-premise deployment</li>
+                        <li class="included">✓ SLA guarantees</li>
+                    </ul>
+                    <button class="priceButton" onclick="contactSales()">Contact Sales</button>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <footer class="footer">
+        <div class="footerContainer">
+            <div class="footerTop">
+                <div class="footerLogo">
+                    <div class="logo">SF</div>
+                    <span class="brandText gradient-text">SecureFlow</span>
+                </div>
+                <div class="footerLinks">
+                    <div class="linkColumn">
+                        <h4>Product</h4>
+                        <ul>
+                            <li><a href="#">Features</a></li>
+                            <li><a href="#">Pricing</a></li>
+                            <li><a href="#">Documentation</a></li>
+                            <li><a href="#">API Reference</a></li>
+                        </ul>
+                    </div>
+                    <div class="linkColumn">
+                        <h4>Company</h4>
+                        <ul>
+                            <li><a href="#">About Us</a></li>
+                            <li><a href="#">Careers</a></li>
+                            <li><a href="#">Blog</a></li>
+                            <li><a href="#">Press</a></li>
+                        </ul>
+                    </div>
+                    <div class="linkColumn">
+                        <h4>Support</h4>
+                        <ul>
+                            <li><a href="#">Help Center</a></li>
+                            <li><a href="#">Contact Us</a></li>
+                            <li><a href="#">Status</a></li>
+                            <li><a href="#">Security</a></li>
+                        </ul>
+                    </div>
+                    <div class="linkColumn">
+                        <h4>Legal</h4>
+                        <ul>
+                            <li><a href="#">Privacy Policy</a></li>
+                            <li><a href="#">Terms of Service</a></li>
+                            <li><a href="#">Cookie Policy</a></li>
+                            <li><a href="#">Compliance</a></li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+            <div class="footerBottom">
+                <p>&copy; 2024 SecureFlow. All rights reserved. Built with security in mind.</p>
+            </div>
+        </div>
+    </footer>
+    
+    <div class="auth-modal" id="authModal">
+        <div class="auth-container">
+            <button class="close-modal" onclick="closeModal()">×</button>
+            
+            <div id="signInView">
+                <div class="auth-header">
+                    <h2 class="auth-title">Welcome Back</h2>
+                    <p class="auth-subtitle">Sign in to continue to SecureFlow</p>
+                </div>
+                <form class="auth-form" onsubmit="event.preventDefault(); alert('Sign In Submitted (demo)');">
+                    <div class="form-group">
+                        <label for="signInEmail" class="form-label">Email</label>
+                        <input type="email" id="signInEmail" class="form-input" placeholder="you@example.com" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="signInPassword" class="form-label">Password</label>
+                        <input type="password" id="signInPassword" class="form-input" placeholder="••••••••" required>
+                    </div>
+                    <button type="submit" class="auth-button">Sign In</button>
+                </form>
+                <div class="auth-switch">
+                    <p>Don't have an account? <a onclick="switchForm('signUp')">Sign Up</a></p>
+                </div>
+            </div>
+
+            <div id="signUpView" style="display: none;">
+                <div class="auth-header">
+                    <h2 class="auth-title">Create Account</h2>
+                    <p class="auth-subtitle">Get started with your 14-day free trial</p>
+                </div>
+                <form class="auth-form" onsubmit="event.preventDefault(); alert('Sign Up Submitted (demo)');">
+                     <div class="form-group">
+                        <label for="signUpName" class="form-label">Full Name</label>
+                        <input type="text" id="signUpName" class="form-input" placeholder="Your Name" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="signUpEmail" class="form-label">Email</label>
+                        <input type="email" id="signUpEmail" class="form-input" placeholder="you@example.com" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="signUpPassword" class="form-label">Password</label>
+                        <input type="password" id="signUpPassword" class="form-input" placeholder="Create a strong password" required>
+                    </div>
+                     <div class="form-group">
+                        <label for="inviteCode" class="form-label">Invite Code</label>
+                        <input type="text" id="inviteCode" class="form-input" value="NSGJTIA12780HRIUROTN@" readonly>
+                    </div>
+                    <button type="submit" class="auth-button">Create Account</button>
+                </form>
+                <div class="auth-switch">
+                    <p>Already have an account? <a onclick="switchForm('signIn')">Sign In</a></p>
+                </div>
+            </div>
+            
+        </div>
+    </div>
+
+
+    <script>
+        // --- NEW MODAL SCRIPT ---
+        const authModal = document.getElementById('authModal');
+        const signInView = document.getElementById('signInView');
+        const signUpView = document.getElementById('signUpView');
+
+        function openModal(view) {
+            authModal.classList.add('active');
+            switchForm(view);
+        }
+
+        function closeModal() {
+            authModal.classList.remove('active');
+        }
+
+        function switchForm(view) {
+            if (view === 'signIn') {
+                signInView.style.display = 'block';
+                signUpView.style.display = 'none';
+            } else {
+                signInView.style.display = 'none';
+                signUpView.style.display = 'block';
+            }
+        }
+        
+        // Close modal if clicking on the background
+        authModal.addEventListener('click', (e) => {
+            if (e.target === authModal) {
+                closeModal();
+            }
+        });
+
+
+        // --- Original Scripts ---
+
+        // Mobile menu toggle
+        function toggleMobileMenu() {
+            const mobileMenu = document.getElementById('mobileMenu');
+            mobileMenu.classList.toggle('open');
+        }
+
+        // Smooth scrolling to sections
+        function scrollToSection(sectionId) {
+            const element = document.getElementById(sectionId);
+            if (element) {
+                element.scrollIntoView({ behavior: 'smooth' });
+            }
+        }
+
+        // Pricing actions
+        function startTrial() {
+            alert('Starting free trial - this would redirect to signup page');
+        }
+
+        function contactSales() {
+            alert('Contact sales - this would open contact form');
+        }
+
+        // Particle system
+        function createParticles() {
+            const particlesContainer = document.getElementById('particles');
+            const numberOfParticles = 50;
+
+            for (let i = 0; i < numberOfParticles; i++) {
+                const particle = document.createElement('div');
+                particle.className = 'particle';
+                particle.style.left = Math.random() * 100 + '%';
+                particle.style.animationDelay = Math.random() * 10 + 's';
+                particle.style.animationDuration = (Math.random() * 10 + 10) + 's';
+                particlesContainer.appendChild(particle);
+            }
+        }
+
+        // Initialize particles on load
+        window.addEventListener('load', createParticles);
+
+        // Intersection Observer for animations
+        const observerOptions = {
+            threshold: 0.1,
+            rootMargin: '0px 0px -100px 0px'
+        };
+
+        const observer = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    entry.target.classList.add('fade-in-up');
+                }
+            });
+        }, observerOptions);
+
+        // Observe all cards and sections
+        document.addEventListener('DOMContentLoaded', () => {
+            const animatedElements = document.querySelectorAll('.featureCard, .serviceCard, .statCard, .priceCard');
+            animatedElements.forEach(el => observer.observe(el));
+        });
+
+        // Navbar scroll effect
+        window.addEventListener('scroll', () => {
+            const navbar = document.querySelector('.topbar');
+            if (window.scrollY > 100) {
+                navbar.style.background = 'rgba(10, 10, 10, 0.95)';
+                navbar.style.backdropFilter = 'blur(20px)';
+            } else {
+                navbar.style.background = 'rgba(10, 10, 10, 0.8)';
+                navbar.style.backdropFilter = 'blur(20px)';
+            }
+        });
+
+        // Close mobile menu when clicking outside
+        document.addEventListener('click', (e) => {
+            const mobileMenu = document.getElementById('mobileMenu');
+            const menuToggle = document.querySelector('.menu-toggle');
+            
+            if (!mobileMenu.contains(e.target) && !menuToggle.contains(e.target)) {
+                mobileMenu.classList.remove('open');
+            }
+        });
+
+        // Add hover effects to cards
+        document.querySelectorAll('.featureCard, .serviceCard, .statCard, .priceCard').forEach(card => {
+            card.addEventListener('mouseenter', () => {
+                card.style.transform = 'translateY(-10px) scale(1.02)';
+            });
+            
+            card.addEventListener('mouseleave', () => {
+                card.style.transform = 'translateY(0) scale(1)';
+            });
+        });
+
+        // Typing effect for hero title
+        function typeWriter(element, text, speed = 50) {
+            let i = 0;
+            element.innerHTML = '';
+            
+            function type() {
+                if (i < text.length) {
+                    element.innerHTML += text.charAt(i);
+                    i++;
+                    setTimeout(type, speed);
+                }
+            }
+            
+            type();
+        }
+
+        // Initialize typing effect
+        window.addEventListener('load', () => {
+            const heroTitle = document.querySelector('.heroTitle');
+            const originalText = heroTitle.textContent;
+            setTimeout(() => {
+                typeWriter(heroTitle, originalText, 30);
+            }, 1000);
+        });
+
+        // Dynamic gradient animation
+        function animateGradients() {
+            const gradientElements = document.querySelectorAll('.gradient-text');
+            
+            gradientElements.forEach(element => {
+                element.addEventListener('mouseenter', () => {
+                    element.style.backgroundSize = '200% 200%';
+                    element.style.animation = 'gradient 2s ease infinite';
+                });
+                
+                element.addEventListener('mouseleave', () => {
+                    element.style.animation = 'none';
+                });
+            });
+        }
+
+        // Add gradient animation styles
+        const style = document.createElement('style');
+        style.textContent = `
+            @keyframes gradient {
+                0% { background-position: 0% 50%; }
+                50% { background-position: 100% 50%; }
+                100% { background-position: 0% 50%; }
+            }
+        `;
+        document.head.appendChild(style);
+
+        // Initialize gradient animations
+        window.addEventListener('load', animateGradients);
+
+        // Counter animation for stats
+        function animateCounters() {
+            const counters = document.querySelectorAll('.statCard h3');
+            
+            counters.forEach(counter => {
+                const target = counter.textContent;
+                const numericValue = parseInt(target.replace(/[^0-9]/g, ''));
+                
+                if (numericValue) {
+                    let current = 0;
+                    const increment = numericValue / 100;
+                    const timer = setInterval(() => {
+                        current += increment;
+                        if (current >= numericValue) {
+                            current = numericValue;
+                            clearInterval(timer);
+                        }
+                        counter.textContent = target.replace(/[0-9,]+/, Math.floor(current).toLocaleString());
+                    }, 20);
+                }
+            });
+        }
+
+        // Trigger counter animation when stats section is visible
+        const statsObserver = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    animateCounters();
+                    statsObserver.unobserve(entry.target);
+                }
+            });
+        });
+
+        document.addEventListener('DOMContentLoaded', () => {
+            const statsSection = document.querySelector('.statsSection');
+            if (statsSection) {
+                statsObserver.observe(statsSection);
+            }
+        });
+
+        // Add parallax effect to hero section
+        window.addEventListener('scroll', () => {
+            const scrolled = window.pageYOffset;
+            const heroContent = document.querySelector('.heroContent');
+            const heroOverlay = document.querySelector('.hero-overlay');
+            
+            if (heroContent && scrolled < window.innerHeight) {
+                heroContent.style.transform = `translateY(${scrolled * 0.5}px)`;
+                heroOverlay.style.opacity = 0.6 + (scrolled / window.innerHeight) * 0.4;
+            }
+        });
+
+        // Add loading animation
+        window.addEventListener('load', () => {
+            document.body.style.opacity = '0';
+            document.body.style.transition = 'opacity 0.5s ease';
+            
+            setTimeout(() => {
+                document.body.style.opacity = '1';
+            }, 100);
+        });
+    </script>
+</body>
+</html>
+```
